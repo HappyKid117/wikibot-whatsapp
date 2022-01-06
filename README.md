@@ -10,6 +10,6 @@ Instructions:
 4) Set your home_chat (preferably your phone number's chat)
 
 Commands:
-1) wiki <text> : returns a summary of <text>
+1) wiki <topic> : returns a summary of <topic>
 2) go home bot : goes to your home_chat from any chat
 3) bot go to <chat_name> : goes to <chat_name> if the bot is currently in home_chat
