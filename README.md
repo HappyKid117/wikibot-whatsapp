@@ -6,6 +6,7 @@ This is made for Chrome version 96
 Instructions:
 1) Get the correct version of chromedriver
 2) Open command prompt and start chrome with devtools and assign a port number
+    example: chrome.exe –remote-debugging-port=8989 –user-data-dir=D:\Code\projects\chromeprofiledata
 3) Ensure the port number is correct in wiki.py
 4) Set your home_chat (preferably your phone number's chat)
 
