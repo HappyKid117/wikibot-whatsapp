@@ -1,3 +1,4 @@
+from decimal import setcontext
 import wikipedia
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -10,14 +11,21 @@ def get_summary(query):
     print("====Wikipedia Query====")
     print(">Query = "+query)
     suggestion = wikipedia.search(query, results=1)
+    if len(suggestion)==0:
+        return "I cannot process the query "+query
+    
     print(">Suggestion = "+suggestion[0])
     print("=======================")
-    return wikipedia.summary(suggestion[0], sentences=2)
+    try:
+        reply = wikipedia.summary(suggestion[0], sentences=2, auto_suggest=False, redirect=True)
+    except wikipedia.exceptions.DisambiguationError as e:
+        reply = wikipedia.summary(e.options[0], sentences=2, auto_suggest=False, redirect=True)
+    return reply
 
 def functionality(x):
     print(">Latest message = "+x)
-    if(x.startswith("wiki")):
-        x = x.replace('wiki', '')
+    if(x.startswith("wiki ")):
+        x = x.replace('wiki ', '')
         send_message(get_summary(x))
     elif(x == "go home bot"):
         send_message("bye")
@@ -28,7 +36,7 @@ def functionality(x):
         if(current_chat==home_chat):
             send_message("I am going to "+chat_name)
             go_to_chat(chat_name)
-            send_message("I am here")
+            send_message('Type "Wiki <topic>" to know more about <topic>')
         else:
             send_message("You can't ask me to go to "+chat_name+" from "+current_chat)
 
@@ -48,9 +56,9 @@ def get_current_chat():
 
 def get_latest_message():
     messages = driver.find_elements_by_xpath('//span[@class="i0jNr selectable-text copyable-text"]')
-    latest_message = messages[len(messages)-1].get_attribute("innerHTML")
-    latest_message = latest_message.replace('<span>', '')
-    latest_message = latest_message.replace('</span>', '')
+    latest_message = messages[len(messages)-1].get_attribute("innerText")
+    # latest_message = latest_message.replace('<span>', '')
+    # latest_message = latest_message.replace('</span>', '')
     return latest_message
 
 def go_to_chat(chat_name):
@@ -72,7 +80,7 @@ def initialize():
 # type in cmd ->>> chrome.exe –remote-debugging-port=8989 –user-data-dir=D:\Code\projects\chromeprofiledata
 
 print(">Starting Bot...")
-home_chat = 'your_chat' # set your private chat
+home_chat = 'chat_name' # set your private chat
 print("Home chat = "+home_chat)
 print(">Initializing driver...")
 driver = initialize()
